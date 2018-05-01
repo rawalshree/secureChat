@@ -16,9 +16,16 @@ while True:
     try:
         conn, address = c1.accept()
         print("Connection from Client : ", address)
+        break
+    except:
+        print("Waiting for user to connect")
+        sleep(3)
+
+while True:
+    try:
         conn, address = c2.accept()
         print("Connection from Client : ", address)
         break
     except:
-        print("ERROR CONNECTING")
+        print("Waiting for user to connect")
         sleep(3)
