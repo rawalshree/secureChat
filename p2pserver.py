@@ -2,7 +2,7 @@ import socket
 from time import sleep
 
 global passwords
-passwords = [('admin', 'pass'), ('DaniWeb', 'best1'), ('newbie', 'help!help!')]
+passwords = [('admin', 'pass'), ('hello', 'world'), ('test', 'test')]
 
 class Server:
 
