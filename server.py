@@ -55,7 +55,12 @@ BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
 SERVER = socket(AF_INET, SOCK_STREAM)
-SERVER.bind(ADDR)
+while True:
+    try:
+        SERVER.bind(ADDR)
+        break
+    except:
+        subprocess.call(' sudo lsof -t -i tcp:33000 | xargs kill -9', shell = True)
 
 if __name__ == "__main__":
     SERVER.listen(5)
