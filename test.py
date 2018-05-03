@@ -29,8 +29,10 @@ def enter(event):
 
 #============================Send==============================
 def send(event=None):  # event is passed by binders.
+    global client_socket
     """Handles sending of messages."""
     msg = my_msg.get()
+    print("the message sent is ", msg)
     my_msg.set("")  # Clears input field.
     client_socket.send(bytes(msg))
     if msg == "{quit}":
@@ -42,10 +44,11 @@ def receive():
     """Handles receiving of messages."""
     global BUFSIZ
     global msg_list
+    global client_socket
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
-            msg_list.insert(tkinter.END, msg)
+            msg_list.insert(tk.END, msg)
         except OSError:  # Possibly client has left the chat.
             break
 
@@ -112,6 +115,8 @@ def homewindow():
 
     receive_thread = Thread(target=receive)
     receive_thread.start()
+    #send_thread = Thread(target=send)
+    #send_thread.start()
     root.mainloop() # Starts GUI execution.
 
 
@@ -126,7 +131,9 @@ def on_closing(event=None):
 #=============================Login=============================
 root = tk.Tk()
 my_msg = tk.StringVar()  # For the messages to be sent.
-my_msg.set("Type your messages here.")
+name = my_msg.get()
+my_msg.set(name)
+#my_msg.set("Type your messages here.")
 root.geometry('300x160')
 root.title('Enter your information')
 #frame for window margin
