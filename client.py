@@ -4,7 +4,7 @@ Client Side code
 
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
-import tkinter
+import Tkinter as tkinter
 
 
 def receive():

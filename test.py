@@ -1,13 +1,18 @@
 from p2pserver import *
-from tkinter import messagebox
+from socket import AF_INET, socket, SOCK_STREAM
+from threading import Thread
 
 try:
+    from tkinter import messagebox
     import tkinter as tk
 except ImportError:
     import Tkinter as tk
+    import tkMessageBox as messagebox
 
 s = Server()
-
+global client_socket
+global BUFSIZ
+global msg_list
 failure_max = 3
 
 def make_entry(parent, caption, width=None, **options):
@@ -21,6 +26,31 @@ def make_entry(parent, caption, width=None, **options):
 def enter(event):
     check_password()
 
+
+#============================Send==============================
+def send(event=None):  # event is passed by binders.
+    """Handles sending of messages."""
+    msg = my_msg.get()
+    my_msg.set("")  # Clears input field.
+    client_socket.send(bytes(msg))
+    if msg == "{quit}":
+        client_socket.close()
+        root.quit()
+
+#=========================Receive===============================
+def receive():
+    """Handles receiving of messages."""
+    global BUFSIZ
+    global msg_list
+    while True:
+        try:
+            msg = client_socket.recv(BUFSIZ).decode("utf8")
+            msg_list.insert(tkinter.END, msg)
+        except OSError:  # Possibly client has left the chat.
+            break
+
+
+#============================Check User and Password===========================
 def check_password(failures=[]):
     """ Collect 1's for every failure and quit program in case of failure_max failures """
     #print(user.get(), password.get())
@@ -40,7 +70,12 @@ def check_password(failures=[]):
     else:
         root.title('Try again. Attempt %i/%i' % (sum(failures)+1, failure_max))
 
+
+
+#================================Main Home Page===============================
 def homewindow():
+    global msg_list
+    root = tk.Tk()
     root.title("Chatter")
     messages_frame = tk.Frame(root)
     scrollbar = tk.Scrollbar(messages_frame)  # To navigate through past messages.
@@ -59,22 +94,36 @@ def homewindow():
 
     root.protocol("WM_DELETE_WINDOW", on_closing)
 
+    #----Now comes the sockets part----
+    HOST = input('Enter host: ')
+    PORT = input('Enter port: ')
+    if not PORT:
+        PORT = 33000
+    else:
+        PORT = int(PORT)
+
+    global BUFSIZ
+    BUFSIZ = 1024
+    ADDR = (HOST, PORT)
+
+    global client_socket
+    client_socket = socket(AF_INET, SOCK_STREAM)
+    client_socket.connect(ADDR)
+
+    receive_thread = Thread(target=receive)
+    receive_thread.start()
+    root.mainloop() # Starts GUI execution.
+
+
+#=========================Closes Window========================
 def on_closing(event=None):
     """This function is to be called when the window is closed."""
     my_msg.set("{quit}")
     send()
 
 
-def send(event=None):  # event is passed by binders.
-    """Handles sending of messages."""
-    msg = my_msg.get()
-    my_msg.set("")  # Clears input field.
-    client_socket.send(bytes(msg))
-    if msg == "{quit}":
-        client_socket.close()
-        root.quit()
 
-
+#=============================Login=============================
 root = tk.Tk()
 my_msg = tk.StringVar()  # For the messages to be sent.
 my_msg.set("Type your messages here.")
@@ -92,4 +141,6 @@ b.pack(side=tk.BOTTOM)
 password.bind('<Return>', enter)
 user.focus_set()
 parent.mainloop()
+
+
 
