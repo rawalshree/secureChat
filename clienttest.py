@@ -44,11 +44,14 @@ class LoginPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
 
+        my_username = StringVar()
+        my_password = StringVar()
+
         usernameLabel = Label(self, text = "Username")
         passwordLabel = Label(self, text = "Password")
 
-        usernameEntry = Entry(self)
-        passwordEntry = Entry(self, show="*")
+        usernameEntry = Entry(self, textvariable=my_username)
+        passwordEntry = Entry(self, textvariable=my_password, show="*")
 
         usernameLabel.grid(row=0, sticky=E)
         usernameEntry.grid(row=0, column=1)
@@ -56,17 +59,19 @@ class LoginPage(Frame):
         passwordLabel.grid(row=1, sticky=E)
         passwordEntry.grid(row=1, column=1)
 
-        login = Button(self, text="Login", command = lambda:controller.show_frame(ChatPage))
+        login = Button(self, text="Login", command = lambda: self._login_btn_clicked(my_username, my_password, controller))
         login.grid(columnspan=2)
 
         self.pack()
 
-    def _login_btn_clicked(self):
-        username = self.usernameEntry.get()
-        password = self.passwordEntry.get()
-        loginCreds = (username, password)
+    def _login_btn_clicked(selfm, username, password, controller):
+        username = username.get()
+        password = password.get()
+        loginCreds = username + " " + password
 
-        server.send(loginCreds)
+        server.send(loginCreds.encode())
+
+        controller.show_frame(ChatPage)
 
 
 

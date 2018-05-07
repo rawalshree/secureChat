@@ -7,36 +7,43 @@ Server Side code
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
+users = [('admin', 'pass'), ('user', 'pass1')]
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
         print("%s:%s has connected." % client_address)
-        client.send(bytes("Greetings from the cave! Now type your name and press enter!"))
+        #client.send(bytes("Greetings from the cave! Now type your name and press enter!"))
         addresses[client] = client_address
+        logincreds = client.recv(BUFSIZ).decode("utf-8")
+        username, password = logincreds.split()
+        login = (username, password)
+        if login not in users:
+            print("Failed Login")
+            client.close()
+        clients[client] = username
         Thread(target=handle_client, args=(client,)).start()
 
 
 def handle_client(client):  # Takes client socket as argument.
     """Handles a single client connection."""
 
-    name = client.recv(BUFSIZ).decode("utf-8")
+    name = clients[client]
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
-    client.send(bytes(welcome))
-    msg = "%s has joined the chat!" % name
-    broadcast(msg.decode("utf-8"))
-    clients[client] = name
+    client.send(welcome.encode())
+    #msg = "%s has joined the chat!" % name
+    #broadcast(msg.decode("utf-8"))
 
     while True:
         msg = client.recv(BUFSIZ)
-        if msg != bytes("{quit}"):
-            broadcast(msg, name+": ")
+        if msg != "{quit}".encode():
+            broadcast(msg, name)
         else:
-            client.send(bytes("{quit}"))
+            client.send("{quit}".encode())
             client.close()
             del clients[client]
-            broadcast(bytes("%s has left the chat." % name, ))
+            broadcast(("%s has left the chat." % name).encode)
             break
 
 
@@ -44,7 +51,7 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
 
     for sock in clients:
-        sock.send(prefix.decode("utf-8") + msg)
+        sock.send((prefix + ": " + msg.decode("utf-8")).encode())
 
         
 clients = {}
