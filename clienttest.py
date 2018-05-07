@@ -2,19 +2,19 @@ from tkinter import *
 import socket
 import select
 import sys
+from threading import Thread
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
 from Crypto.Hash import SHA
- 
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if len(sys.argv) != 3:
-    print "Correct usage: script, IP address, port number"
+    print ("Correct usage: script, IP address, port number")
     exit()
 IP_address = str(sys.argv[1])
 Port = int(sys.argv[2])
 server.connect((IP_address, Port))
- 
 
 
 class App(Tk):
@@ -56,7 +56,7 @@ class LoginPage(Frame):
         passwordLabel.grid(row=1, sticky=E)
         passwordEntry.grid(row=1, column=1)
 
-        login = Button(self, text="Login", command = _login_btn_clicked(self))
+        login = Button(self, text="Login", command = lambda:controller.show_frame(ChatPage))
         login.grid(columnspan=2)
 
         self.pack()
@@ -76,22 +76,47 @@ class LoginPage(Frame):
 class ChatPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
-        my_msg = StringVar()  # For the messages to be sent.
-        scrollbar = Scrollbar(self)  # To navigate through past messages.
-        # Following will contain the messages.
-        msg_list = Listbox(self, width=50, yscrollcommand=scrollbar.set)
-        user_list = Listbox(self, width=20, yscrollcommand=scrollbar.set)
+        my_msg = StringVar() 
+
+        scrollbar = Scrollbar(self) 
         scrollbar.pack(side=RIGHT, fill=Y,)
-        msg_list.pack(side=LEFT, fill=BOTH, padx = 10, pady = 20)
+
+        self.msg_list = Listbox(self, width=50, yscrollcommand=scrollbar.set)
+        self.msg_list.pack(side=LEFT, fill=BOTH, padx = 10, pady = 20)
+
+        user_list = Listbox(self, width=20, yscrollcommand=scrollbar.set)
         user_list.pack(side=RIGHT, fill=BOTH, padx=10, pady = 20)
 
         entry_field = Entry(self, textvariable=my_msg)
         entry_field.bind("<Return>")
         entry_field.pack(side=LEFT, anchor=SW)
-        send_button = Button(self, text="Send")
+
+        send_button = Button(self, text="Send", command = lambda: self.send(my_msg))
         send_button.pack(side=BOTTOM)
 
         self.grid()
+
+        receive_thread = Thread(target= lambda:self.receive())
+        receive_thread.start()
+
+    def send(self, my_msg):  # event is passed by binders.  
+        msg = my_msg.get()
+        my_msg.set("")
+        server.send(msg.encode())
+        if msg == "{quit}":
+            server.close()
+            self.quit()
+
+    def receive(self):
+        BUFSIZ = 1024
+        while True:
+            try:
+                msg = server.recv(BUFSIZ).decode("utf-8")
+                self.msg_list.insert(END, msg)
+            except OSError:  # Possibly client has left the chat.
+                break
+
+
 
 
 class MainMenu:

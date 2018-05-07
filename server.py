@@ -47,17 +47,7 @@ list_of_clients = []
 def clientthread(conn, addr):
  
     # sends a message to the client whose user object is conn
-    conn.send("Welcome to this chatroom!\n")
-
-    conn.send("Please enter your username, followed by a space, then your password\n")
-
-    message = conn.recv(2048)
-    username, password = message.split()
-    login = (username, password)
-    conn.send
-    if login in users:
-        conn.close()
-        remove(conn)
+    conn.send("Welcome to this chatroom!")
  
     displayClients()
     while True:
