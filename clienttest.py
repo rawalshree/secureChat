@@ -121,15 +121,6 @@ class ChatPage(Frame):
             except OSError:  # Possibly client has left the chat.
                 break
 
-    def receive_client_list(self):
-        BUFSIZ = 1024
-        client_list = server.recv(BUFSIZ).decode("utf-8")
-        for names in client_list.split():
-            self.msg_list.insert(END, names)
-
-
-
-
 class MainMenu:
     def __init__(self, master):
         menubar = Menu(master)

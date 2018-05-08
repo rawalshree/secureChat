@@ -32,8 +32,6 @@ def handle_client(client):  # Takes client socket as argument.
     name = clients[client]
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
     client.send(welcome.encode())
-    #msg = "%s has joined the chat!" % name
-    #broadcast(msg.decode("utf-8"))
 
     while True:
         msg = client.recv(BUFSIZ)
@@ -51,7 +49,6 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
     for sock in clients:
         sock.send((prefix + ": " + msg.decode("utf-8")).encode())
-
         
 clients = {}
 addresses = {}
