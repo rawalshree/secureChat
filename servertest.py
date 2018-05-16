@@ -1,13 +1,19 @@
 
 '''
 Server Side code
+
+1 - chat
+2 - online
+3 - offline
 '''
 
 
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+import subprocess
 
-users = [('admin', 'pass'), ('user', 'pass1')]
+users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree')]
+online_users = []
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -23,6 +29,7 @@ def accept_incoming_connections():
             print("Failed Login")
             client.close()
         clients[client] = username
+        online_users.append(username)
         Thread(target=handle_client, args=(client,)).start()
 
 
@@ -32,6 +39,10 @@ def handle_client(client):  # Takes client socket as argument.
     name = clients[client]
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
     client.send(welcome.encode())
+    broadcastStatus("3")
+    for names in online_users:
+        broadcastStatus(names)
+
 
     while True:
         msg = client.recv(BUFSIZ)
@@ -44,6 +55,11 @@ def handle_client(client):  # Takes client socket as argument.
             broadcast(("%s has left the chat." % name).encode)
             break
 
+
+def broadcastStatus(name):  # prefix is for name identification.
+    """Broadcasts a message to all the clients."""
+    for sock in clients:
+        sock.send(("2" + name).encode())
 
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
