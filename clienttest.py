@@ -89,8 +89,8 @@ class ChatPage(Frame):
         self.msg_list = Listbox(self, width=50, yscrollcommand=scrollbar.set)
         self.msg_list.pack(side=LEFT, fill=BOTH, padx = 10, pady = 20)
 
-        user_list = Listbox(self, width=20, yscrollcommand=scrollbar.set)
-        user_list.pack(side=RIGHT, fill=BOTH, padx=10, pady = 20)
+        self.user_list = Listbox(self, width=20, yscrollcommand=scrollbar.set)
+        self.user_list.pack(side=RIGHT, fill=BOTH, padx=10, pady = 20)
 
         entry_field = Entry(self, textvariable=my_msg)
         entry_field.bind("<Return>")
@@ -117,7 +117,17 @@ class ChatPage(Frame):
         while True:
             try:
                 msg = server.recv(BUFSIZ).decode("utf-8")
-                self.msg_list.insert(END, msg)
+                print(msg)
+                if msg[0] == '1':
+                    self.msg_list.insert(END, msg[1:])
+                elif msg[1] == "3":
+                    self.user_list.delete("0", 'end')
+                elif msg[0] == "2":
+                    self.user_list.insert(END, msg[1:])
+                
+                else:
+                    self.msg_list.insert(END, msg)
+                
             except OSError:  # Possibly client has left the chat.
                 break
 
