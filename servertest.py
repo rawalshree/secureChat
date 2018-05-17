@@ -39,9 +39,7 @@ def handle_client(client):  # Takes client socket as argument.
     name = clients[client]
     welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
     client.send(welcome.encode())
-    broadcastStatus("3")
-    for names in online_users:
-        broadcastStatus(names)
+    broadcastStatus(','.join(online_users))
 
 
     while True:

@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 import socket
 import select
 import sys
@@ -123,7 +123,9 @@ class ChatPage(Frame):
                 elif msg[1] == "3":
                     self.user_list.delete("0", 'end')
                 elif msg[0] == "2":
-                    self.user_list.insert(END, msg[1:])
+                    self.user_list.delete(0, END)
+                    for names in msg[1:].split(','):
+                        self.user_list.insert(END, names)
                 
                 else:
                     self.msg_list.insert(END, msg)
