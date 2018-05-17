@@ -120,8 +120,7 @@ class ChatPage(Frame):
                 print(msg)
                 if msg[0] == '1':
                     self.msg_list.insert(END, msg[1:])
-                elif msg[1] == "3":
-                    self.user_list.delete("0", 'end')
+                    
                 elif msg[0] == "2":
                     self.user_list.delete(0, END)
                     for names in msg[1:].split(','):

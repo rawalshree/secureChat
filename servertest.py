@@ -49,6 +49,8 @@ def handle_client(client):  # Takes client socket as argument.
         else:
             client.send("{quit}".encode())
             client.close()
+            del online_users[client]
+            broadcastStatus(','.join(online_users))
             del clients[client]
             broadcast(("%s has left the chat." % name).encode)
             break
