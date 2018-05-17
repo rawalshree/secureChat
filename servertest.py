@@ -12,7 +12,7 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import subprocess
 
-users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree')]
+users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree'), ('jon', 'jon')]
 online_users = []
 
 def accept_incoming_connections():
@@ -49,10 +49,13 @@ def handle_client(client):  # Takes client socket as argument.
         else:
             client.send("{quit}".encode())
             client.close()
-            del online_users[client]
-            broadcastStatus(','.join(online_users))
+            #online_users.remove(name)
+            del online_users[online_users.index(name)]
+            #print("before" , clients)
             del clients[client]
-            broadcast(("%s has left the chat." % name).encode)
+            #print("after", clients)
+            broadcast("has left the chat.",  name)
+            broadcastStatus(','.join(online_users))
             break
 
 
