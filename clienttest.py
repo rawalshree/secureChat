@@ -117,10 +117,10 @@ class ChatPage(Frame):
         while True:
             try:
                 msg = server.recv(BUFSIZ).decode("utf-8")
-                print(msg)
+                #print(msg)
                 if msg[0] == '1':
                     self.msg_list.insert(END, msg[1:])
-                    
+
                 elif msg[0] == "2":
                     self.user_list.delete(0, END)
                     for names in msg[1:].split(','):
