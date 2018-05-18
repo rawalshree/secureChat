@@ -118,7 +118,7 @@ class ChatPage(Frame):
 
     def sendClients(self):
         values = [self.user_list.get(idx) for idx in self.user_list.curselection()]
-        print (values)
+        server.send((",".join(values)).encode())
 
     def receive(self):
         BUFSIZ = 1024

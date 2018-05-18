@@ -44,19 +44,20 @@ def handle_client(client):  # Takes client socket as argument.
 
     while True:
         msg = client.recv(BUFSIZ)
-        if msg != "{quit}".encode():
-            broadcast(msg, name)
-        else:
-            client.send("{quit}".encode())
-            client.close()
-            #online_users.remove(name)
-            del online_users[online_users.index(name)]
-            #print("before" , clients)
-            del clients[client]
-            #print("after", clients)
-            broadcast("has left the chat.".encode(), name)
-            broadcastStatus(','.join(online_users))
-            break
+        print (msg.decode())
+        # if msg != "{quit}".encode():
+        #     broadcast(msg, name)
+        # else:
+        #     client.send("{quit}".encode())
+        #     client.close()
+        #     #online_users.remove(name)
+        #     del online_users[online_users.index(name)]
+        #     #print("before" , clients)
+        #     del clients[client]
+        #     #print("after", clients)
+        #     broadcast("has left the chat.".encode(), name)
+        #     broadcastStatus(','.join(online_users))
+        #     break
 
 
 def broadcastStatus(name):  # prefix is for name identification.
