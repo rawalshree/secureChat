@@ -54,7 +54,7 @@ def handle_client(client):  # Takes client socket as argument.
             #print("before" , clients)
             del clients[client]
             #print("after", clients)
-            broadcast("has left the chat.",  name)
+            broadcast("has left the chat.".encode(), name)
             broadcastStatus(','.join(online_users))
             break
 
