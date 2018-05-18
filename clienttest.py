@@ -82,6 +82,7 @@ class ChatPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         my_msg = StringVar() 
+        users = StringVar()
 
         scrollbar = Scrollbar(self) 
         scrollbar.pack(side=RIGHT, fill=Y,)
@@ -89,7 +90,7 @@ class ChatPage(Frame):
         self.msg_list = Listbox(self, width=50, yscrollcommand=scrollbar.set)
         self.msg_list.pack(side=LEFT, fill=BOTH, padx = 10, pady = 20)
 
-        self.user_list = Listbox(self, width=20, yscrollcommand=scrollbar.set)
+        self.user_list = Listbox(self, width=20, yscrollcommand=scrollbar.set, selectmode='multiple', exportselection=0)
         self.user_list.pack(side=RIGHT, fill=BOTH, padx=10, pady = 20)
 
         entry_field = Entry(self, textvariable=my_msg)
@@ -98,6 +99,9 @@ class ChatPage(Frame):
 
         send_button = Button(self, text="Send", command = lambda: self.send(my_msg))
         send_button.pack(side=BOTTOM)
+
+        send_clients = Button(self, text="Add", command = lambda: self.sendClients())
+        send_clients.pack(side=BOTTOM)
 
         self.grid()
 
@@ -111,6 +115,10 @@ class ChatPage(Frame):
         if msg == "{quit}":
             server.close()
             self.quit()
+
+    def sendClients(self):
+        values = [self.user_list.get(idx) for idx in self.user_list.curselection()]
+        print (values)
 
     def receive(self):
         BUFSIZ = 1024
