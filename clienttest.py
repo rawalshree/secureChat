@@ -82,14 +82,9 @@ class LoginPage(Frame):
         loginCreds = username + " " + password
 
         server.send(loginCreds.encode())
-        log = server.recv().decode("utf-8")
 
-        print("The log is : ", log)
+        controller.show_frame(ChatPage)
 
-        if log == "True":
-            controller.show_frame(ChatPage)
-        else:
-            print("Incorrect Credentials MotherFucker")
 
 
 
