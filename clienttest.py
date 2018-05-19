@@ -82,8 +82,12 @@ class LoginPage(Frame):
         loginCreds = username + " " + password
 
         server.send(loginCreds.encode())
+        log = server.recv().decode("utf-8")
 
-        controller.show_frame(ChatPage)
+        if log == "True":
+            controller.show_frame(ChatPage)
+        else:
+            print("Incorrect Credentials MotherFucker")
 
 
 
@@ -103,7 +107,6 @@ class ChatPage(Frame):
         self.user_list.pack(side=RIGHT, fill=BOTH, padx=10, pady = 20)
 
         entry_field = Entry(self, textvariable=my_msg)
-        entry_field.bind("<Return>")
         entry_field.pack(side=LEFT, anchor=SW)
 
         send_button = Button(self, text="Send", command = lambda: self.send(my_msg))

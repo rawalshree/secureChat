@@ -24,17 +24,19 @@ def accept_incoming_connections():
         
         print("%s:%s has connected." % client_address)
         #client.send(bytes("Greetings from the cave! Now type your name and press enter!"))
-        addresses[client] = client_address
         logincreds = client.recv(BUFSIZ).decode("utf-8")
         try:
             username, password = logincreds.split()
             login = (username, password)
             if login not in users:
                 print("Failed Login")
+                client.send(("False").encode())
                 client.close()
-            clients[client] = username
-            online_users.append(username)
-            Thread(target=handle_client, args=(client,)).start()
+            else:
+                client.send(("True").encode())
+                clients[client] = username
+                online_users.append(username)
+                Thread(target=handle_client, args=(client,)).start()
         except:
             client.close()
 
@@ -93,7 +95,6 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
             sock.send((prefix + ": " + msg.decode("utf-8")).encode())
         
 clients = {}
-addresses = {}
 online_clients = {}
 
 HOST = ''
