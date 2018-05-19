@@ -1,3 +1,4 @@
+from tkinter import messagebox
 from Tkinter import *
 import socket, ssl
 import select
@@ -19,10 +20,16 @@ Port = int(sys.argv[2])
 # Require a certificate from the server. We used a self-signed certificate
 # so here ca_certs must be the server certificate itself.
 
-cert = ssl.get_server_certificate(('localhost', 33000))
-print (cert)
-f = open("certForClient.crt", "w+")
+cert = ssl.get_server_certificate((IP_address, 33000))
+print(cert)
+f = open("certForClient.pem", "w+")
 f.write(cert)
+f.close()
+
+with open("certForClient.pem") as f:
+    with open("certForClient.crt", "w+") as f1:
+        for line in f:
+            f1.write(line)
 
 server = ssl.wrap_socket(socks, ca_certs='certForClient.crt', cert_reqs=ssl.CERT_REQUIRED)
 
@@ -71,8 +78,9 @@ class LoginPage(Frame):
         passwordLabel.grid(row=1, sticky=E)
         passwordEntry.grid(row=1, column=1)
 
-        login = Button(self, text="Login", command = lambda: self._login_btn_clicked(my_username, my_password, controller))
-        login.grid(columnspan=2)
+        while True:
+            login = Button(self, text="Login", command = lambda: self._login_btn_clicked(my_username, my_password, controller))
+            login.grid(columnspan=2)
 
         self.pack()
 
@@ -83,7 +91,13 @@ class LoginPage(Frame):
 
         server.send(loginCreds.encode())
 
-        controller.show_frame(ChatPage)
+        log = server.recv(512).decode("utf-8")
+        print("The log is : ", log)
+
+        if log == 'True':
+            controller.show_frame(ChatPage)
+        else:
+            messagebox.showerror("Error", "Invalid Username or Password")
 
 
 
