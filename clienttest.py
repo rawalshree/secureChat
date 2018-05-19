@@ -84,6 +84,8 @@ class LoginPage(Frame):
         server.send(loginCreds.encode())
         log = server.recv().decode("utf-8")
 
+        print("The log is : ", log)
+
         if log == "True":
             controller.show_frame(ChatPage)
         else:
