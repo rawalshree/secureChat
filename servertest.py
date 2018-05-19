@@ -1,7 +1,5 @@
-
 '''
 Server Side code
-
 1 - chat
 2 - online
 3 - offline
@@ -20,36 +18,22 @@ selected_users = []
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
-        try:
-            connectstream, client_address = SERVER.accept()
+        connectstream, client_address = SERVER.accept()
 
-            client = ssl.wrap_socket(connectstream, server_side=True, certfile="server.crt", keyfile="server.key")
-            
-            
-            print("%s:%s has connected." % client_address)
-            addresses[client] = client_address
-            logincreds = client.recv(BUFSIZ).decode("utf-8")
+        client = ssl.wrap_socket(connectstream, server_side=True, certfile="server.crt", keyfile="server.key")
         
-            username, password = logincreds.split()
-            login = (username, password)
-            print("after login")
-            if login not in users:
-                client.send(("False").encode())
-            else:
-                client.send(("True").encode())
-                print("after if loop")
-                clients[client] = username
-                print("after username")
-                online_users.append(username)
-                print("after append")
-                Thread(target=handle_client, args=(client,)).start()
-                print("after thread")
-                
-
-        except Exception as error:
-            print ("User failed to login")
-            pass
-            #client.close()
+        print("%s:%s has connected." % client_address)
+        #client.send(bytes("Greetings from the cave! Now type your name and press enter!"))
+        addresses[client] = client_address
+        logincreds = client.recv(BUFSIZ).decode("utf-8")
+        username, password = logincreds.split()
+        login = (username, password)
+        if login not in users:
+            print("Failed Login")
+            client.close()
+        clients[client] = username
+        online_users.append(username)
+        Thread(target=handle_client, args=(client,)).start()
 
 
 def handle_client(client):  # Takes client socket as argument.
