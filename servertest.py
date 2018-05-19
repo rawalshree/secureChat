@@ -10,7 +10,7 @@ Server Side code
 
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
-import subprocess
+import subprocess, ssl
 
 users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree'), ('jon', 'jon')]
 online_users = []
@@ -20,7 +20,10 @@ selected_users = []
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
-        client, client_address = SERVER.accept()
+        connectstream, client_address = SERVER.accept()
+
+        client = ssl.wrap_socket(connectstream, server_side=True, certfile="server.crt", keyfile="server.key")
+        
         print("%s:%s has connected." % client_address)
         #client.send(bytes("Greetings from the cave! Now type your name and press enter!"))
         addresses[client] = client_address
@@ -47,26 +50,25 @@ def handle_client(client):  # Takes client socket as argument.
 
     while True:
         msg = client.recv(BUFSIZ)
-        #print (msg.decode())
+        print (msg.decode())
 
         if msg[0] == '/':
             selected_users = msg.split(',')
-            #print(selected_users)
+            print(selected_users)
             del selected_users[selected_users.index('/')]    
-            #print(selected_users)   
+            print(selected_users)   
         
         elif msg != "{quit}".encode():
-            #print("elif not quit")
+            print("elif not quit")
             broadcast(msg, name)
         
         else:
             client.send("{quit}".encode())
             client.close()
-            #online_users.remove(name)
             del online_users[online_users.index(name)]
-            #print("before" , clients)
+            print("before" , clients)
             del clients[client]
-            #print("after", clients)
+            print("after", clients)
             broadcast("has left the chat.".encode(), name)
             broadcastStatus(','.join(online_users))
             break
@@ -80,13 +82,13 @@ def broadcastStatus(name):  # prefix is for name identification.
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     global selected_users
     """Broadcasts a message to all the clients."""
-    #print("into broadcast")
+    print("into broadcast")
     for sock in clients:
-        #print("into the for loop")
-        #print(clients.get(sock))
-        #print(selected_users)
+        print("into the for loop")
+        print(clients.get(sock))
+        print(selected_users)
         if clients.get(sock) in selected_users and prefix in selected_users:
-            #print("SENDING")
+            print("SENDING")
             sock.send((prefix + ": " + msg.decode("utf-8")).encode())
         
 clients = {}
