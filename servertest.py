@@ -47,16 +47,16 @@ def handle_client(client):  # Takes client socket as argument.
 
     while True:
         msg = client.recv(BUFSIZ)
-        print (msg.decode())
+        #print (msg.decode())
 
         if msg[0] == '/':
             selected_users = msg.split(',')
-            print(selected_users)
+            #print(selected_users)
             del selected_users[selected_users.index('/')]    
-            print(selected_users)   
+            #print(selected_users)   
         
         elif msg != "{quit}".encode():
-            print("elif not quit")
+            #print("elif not quit")
             broadcast(msg, name)
         
         else:
@@ -80,13 +80,13 @@ def broadcastStatus(name):  # prefix is for name identification.
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     global selected_users
     """Broadcasts a message to all the clients."""
-    print("into broadcast")
+    #print("into broadcast")
     for sock in clients:
-        print("into the for loop")
-        print(clients.get(sock))
-        print(selected_users)
+        #print("into the for loop")
+        #print(clients.get(sock))
+        #print(selected_users)
         if clients.get(sock) in selected_users and prefix in selected_users:
-            print("SENDING")
+            #print("SENDING")
             sock.send((prefix + ": " + msg.decode("utf-8")).encode())
         
 clients = {}
