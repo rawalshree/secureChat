@@ -75,9 +75,6 @@ class LoginPage(Frame):
 
 
 
-
-
-
 class ChatPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -118,7 +115,7 @@ class ChatPage(Frame):
 
     def sendClients(self):
         values = [self.user_list.get(idx) for idx in self.user_list.curselection()]
-        server.send((",".join(values)).encode())
+        server.send("/," + (",".join(values)).encode())
 
     def receive(self):
         BUFSIZ = 1024
