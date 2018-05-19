@@ -15,9 +15,16 @@ if len(sys.argv) != 3:
 IP_address = str(sys.argv[1])
 Port = int(sys.argv[2])
 
+cert = ssl.get_server_certificate((IP_address, Port))
+print(cert)
+f = open("certForClient.crt", "w+")
+f.write(cert)
+f.close()
+
+
 # Require a certificate from the server. We used a self-signed certificate
 # so here ca_certs must be the server certificate itself.
-server = ssl.wrap_socket(socks, ca_certs="server.crt", cert_reqs=ssl.CERT_REQUIRED)
+server = ssl.wrap_socket(socks, ca_certs="certForClient.crt", cert_reqs=ssl.CERT_REQUIRED)
 
 server.connect((IP_address, Port))
 

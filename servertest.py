@@ -26,14 +26,17 @@ def accept_incoming_connections():
         #client.send(bytes("Greetings from the cave! Now type your name and press enter!"))
         addresses[client] = client_address
         logincreds = client.recv(BUFSIZ).decode("utf-8")
-        username, password = logincreds.split()
-        login = (username, password)
-        if login not in users:
-            print("Failed Login")
+        try:
+            username, password = logincreds.split()
+            login = (username, password)
+            if login not in users:
+                print("Failed Login")
+                client.close()
+            clients[client] = username
+            online_users.append(username)
+            Thread(target=handle_client, args=(client,)).start()
+        except:
             client.close()
-        clients[client] = username
-        online_users.append(username)
-        Thread(target=handle_client, args=(client,)).start()
 
 
 def handle_client(client):  # Takes client socket as argument.
