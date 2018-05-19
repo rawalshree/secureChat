@@ -37,14 +37,15 @@ def accept_incoming_connections():
                 client.send(("False").encode())
             else:
                 client.send(("True").encode())
+                print("after if loop")
+                clients[client] = username
+                print("after username")
+                online_users.append(username)
+                print("after append")
+                Thread(target=handle_client, args=(client,)).start()
+                print("after thread")
                 
-            print("after if loop")
-            clients[client] = username
-            print("after username")
-            online_users.append(username)
-            print("after append")
-            Thread(target=handle_client, args=(client,)).start()
-            print("after thread")
+
         except Exception as error:
             print ("User failed to login")
             pass
