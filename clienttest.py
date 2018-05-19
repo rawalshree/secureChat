@@ -70,7 +70,9 @@ class LoginPage(Frame):
         passwordLabel = Label(self, text = "Password")
 
         usernameEntry = Entry(self, textvariable=my_username)
+        usernameEntry.bind("<Return>")
         passwordEntry = Entry(self, textvariable=my_password, show="*")
+        passwordEntry.bind("<Return>")
 
         usernameLabel.grid(row=0, sticky=E)
         usernameEntry.grid(row=0, column=1)
@@ -78,9 +80,8 @@ class LoginPage(Frame):
         passwordLabel.grid(row=1, sticky=E)
         passwordEntry.grid(row=1, column=1)
 
-        while True:
-            login = Button(self, text="Login", command = lambda: self._login_btn_clicked(my_username, my_password, controller))
-            login.grid(columnspan=2)
+        login = Button(self, text="Login", command = lambda: self._login_btn_clicked(my_username, my_password, controller))
+        login.grid(columnspan=2)
 
         self.pack()
 
@@ -98,6 +99,7 @@ class LoginPage(Frame):
             controller.show_frame(ChatPage)
         else:
             messagebox.showerror("Error", "Invalid Username or Password")
+            controller.show_frame(LoginPage)
 
 
 
