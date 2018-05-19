@@ -1,9 +1,7 @@
-from tkinter import messagebox
 from Tkinter import *
 import socket, ssl
 import select
 import sys
-import OpenSSL
 from threading import Thread
 
 from Crypto.PublicKey import RSA
@@ -19,19 +17,7 @@ Port = int(sys.argv[2])
 
 # Require a certificate from the server. We used a self-signed certificate
 # so here ca_certs must be the server certificate itself.
-
-cert = ssl.get_server_certificate((IP_address, 33000))
-print(cert)
-f = open("certForClient.pem", "w+")
-f.write(cert)
-f.close()
-
-with open("certForClient.pem") as f:
-    with open("certForClient.crt", "w+") as f1:
-        for line in f:
-            f1.write(line)
-
-server = ssl.wrap_socket(socks, ca_certs='certForClient.crt', cert_reqs=ssl.CERT_REQUIRED)
+server = ssl.wrap_socket(socks, ca_certs="server.crt", cert_reqs=ssl.CERT_REQUIRED)
 
 server.connect((IP_address, Port))
 
@@ -70,9 +56,7 @@ class LoginPage(Frame):
         passwordLabel = Label(self, text = "Password")
 
         usernameEntry = Entry(self, textvariable=my_username)
-        usernameEntry.bind("<Return>")
         passwordEntry = Entry(self, textvariable=my_password, show="*")
-        passwordEntry.bind("<Return>")
 
         usernameLabel.grid(row=0, sticky=E)
         usernameEntry.grid(row=0, column=1)
@@ -92,14 +76,7 @@ class LoginPage(Frame):
 
         server.send(loginCreds.encode())
 
-        log = server.recv(512).decode("utf-8")
-        print("The log is : ", log)
-
-        if log == 'True':
-            controller.show_frame(ChatPage)
-        else:
-            messagebox.showerror("Error", "Invalid Username or Password")
-            controller.show_frame(LoginPage)
+        controller.show_frame(ChatPage)
 
 
 
