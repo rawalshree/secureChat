@@ -1,5 +1,5 @@
 from Tkinter import *
-import socket
+import socket, ssl
 import select
 import sys
 from threading import Thread
@@ -8,12 +8,17 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_PSS
 from Crypto.Hash import SHA
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socks = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if len(sys.argv) != 3:
     print ("Correct usage: script, IP address, port number")
     exit()
 IP_address = str(sys.argv[1])
 Port = int(sys.argv[2])
+
+# Require a certificate from the server. We used a self-signed certificate
+# so here ca_certs must be the server certificate itself.
+server = ssl.wrap_socket(socks, ca_certs="server.crt", cert_reqs=ssl.CERT_REQUIRED)
+
 server.connect((IP_address, Port))
 
 
