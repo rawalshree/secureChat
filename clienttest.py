@@ -2,6 +2,7 @@ from Tkinter import *
 import socket, ssl
 import select
 import sys
+import OpenSSL
 from threading import Thread
 
 from Crypto.PublicKey import RSA
@@ -17,7 +18,13 @@ Port = int(sys.argv[2])
 
 # Require a certificate from the server. We used a self-signed certificate
 # so here ca_certs must be the server certificate itself.
-server = ssl.wrap_socket(socks, ca_certs="server.crt", cert_reqs=ssl.CERT_REQUIRED)
+
+cert = ssl.get_server_certificate(('localhost', 33000))
+print (cert)
+f = open("certForClient.crt", "w+")
+f.write(cert)
+
+server = ssl.wrap_socket(socks, ca_certs='certForClient.crt', cert_reqs=ssl.CERT_REQUIRED)
 
 server.connect((IP_address, Port))
 
