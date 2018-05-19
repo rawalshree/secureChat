@@ -9,6 +9,7 @@ Server Side code
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import subprocess, ssl
+from tkinter import messagebox
 
 users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree'), ('jon', 'jon')]
 online_users = []
@@ -29,11 +30,9 @@ def accept_incoming_connections():
             username, password = logincreds.split()
             login = (username, password)
             if login not in users:
-                print("Failed Login")
-                client.send(("False").encode())
+                #messagebox.showerror("Invalid Credentials", "Incorrect Username or Password MotherFucker!!!!!!!!")
                 client.close()
             else:
-                client.send(("True").encode())
                 clients[client] = username
                 online_users.append(username)
                 Thread(target=handle_client, args=(client,)).start()
