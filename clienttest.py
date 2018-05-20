@@ -5,9 +5,6 @@ import select
 import sys
 from threading import Thread
 
-from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_PSS
-from Crypto.Hash import SHA
 
 socks = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if len(sys.argv) != 3:
@@ -25,12 +22,13 @@ f.close()
 
 # Require a certificate from the server. We used a self-signed certificate
 # so here ca_certs must be the server certificate itself.
-server = ssl.wrap_socket(socks, ca_certs="certForClient.crt", cert_reqs=ssl.CERT_REQUIRED)
 
+server = ssl.wrap_socket(socks, ca_certs="certForClient.crt", cert_reqs=ssl.CERT_REQUIRED)
 server.connect((IP_address, Port))
 
 
 class App(Tk):
+
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         MainMenu(self)
@@ -48,12 +46,14 @@ class App(Tk):
 
         self.show_frame(LoginPage)
 
+
     def show_frame(self, context):
         frame = self.frames[context]
         frame.tkraise()
 
 
 class LoginPage(Frame):
+
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
 
@@ -77,6 +77,7 @@ class LoginPage(Frame):
 
         self.pack()
 
+
     def _login_btn_clicked(selfm, username, password, controller):
         username = username.get()
         password = password.get()
@@ -88,8 +89,8 @@ class LoginPage(Frame):
 
 
 
-
 class ChatPage(Frame):
+
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         my_msg = StringVar() 
@@ -118,6 +119,7 @@ class ChatPage(Frame):
         receive_thread = Thread(target= lambda:self.receive())
         receive_thread.start()
 
+
     def send(self, my_msg):  # event is passed by binders.  
         msg = my_msg.get()
         my_msg.set("")
@@ -126,9 +128,11 @@ class ChatPage(Frame):
             server.close()
             self.quit()
 
+
     def sendClients(self):
         values = [self.user_list.get(idx) for idx in self.user_list.curselection()]
         server.send("/," + (",".join(values)).encode())
+
 
     def receive(self):
         BUFSIZ = 1024
@@ -154,6 +158,7 @@ class ChatPage(Frame):
                 
             except OSError:  # Possibly client has left the chat.
                 break
+
 
 class MainMenu:
     def __init__(self, master):
