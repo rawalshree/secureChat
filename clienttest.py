@@ -136,7 +136,7 @@ class ChatPage(Frame):
             try:
                 msg = server.recv(BUFSIZ).decode("utf-8")
 
-                print("The message is : ", msg)
+                #print("The message is : ", msg)
                 if msg[0] == '1':
                     self.msg_list.insert(END, msg[1:])
 
@@ -150,7 +150,7 @@ class ChatPage(Frame):
                     self.msg_list.insert(END, msg)
 
                 msg = "bla"
-                print("before receive", msg)
+                #print("before receive", msg)
                 
             except OSError:  # Possibly client has left the chat.
                 break
