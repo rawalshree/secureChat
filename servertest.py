@@ -52,7 +52,7 @@ def handle_client(client):  # Takes client socket as argument.
 
     while True:
         msg = client.recv(BUFSIZ)
-        #print (msg.decode())
+
 
         if msg[0] == '/':
             selected_users = msg.split(',')
