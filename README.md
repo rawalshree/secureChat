@@ -1,5 +1,5 @@
 # secureChat
-This application is designed to use emberjs and a firebase database to create and manage various tasks 
+This application is designed to use python with SSL sockets.
 
 
 ## Libraries Used
@@ -83,7 +83,7 @@ Then simply download a zip, or..
     * ` Shree Rawal,`
     * ` Email:000@gmail.com`
     * ` Jonathon Moubayed,`
-      * `Email: jonmoubayed@csu.fullerton.edu`
+    * `Email: jonmoubayed@csu.fullerton.edu`
    
   
 
