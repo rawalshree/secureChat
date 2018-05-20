@@ -11,10 +11,12 @@ from threading import Thread
 import subprocess, ssl
 from tkinter import messagebox
 
-users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree'), ('jon', 'jon')]
-online_users = []
+
 global selected_users
+users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree'), ('jon', 'jon')]
+online_users = [
 selected_users = []
+
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -30,7 +32,7 @@ def accept_incoming_connections():
             username, password = logincreds.split()
             login = (username, password)
             if login not in users:
-                #messagebox.showerror("Invalid Credentials", "Incorrect Username or Password MotherFucker!!!!!!!!")
+                #messagebox.showerror("Invalid Credentials", "Incorrect Username or Password!!!!!!!!")
                 client.close()
             else:
                 clients[client] = username
@@ -94,7 +96,6 @@ def broadcast(msg, prefix=""):  # prefix is for name identification.
             sock.send((prefix + ": " + msg.decode("utf-8")).encode())
         
 clients = {}
-online_clients = {}
 
 HOST = ''
 PORT = 33000
