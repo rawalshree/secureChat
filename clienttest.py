@@ -1,5 +1,4 @@
 from Tkinter import *
-from tkinter import messagebox
 import socket, ssl
 import select
 import sys
