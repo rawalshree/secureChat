@@ -1,4 +1,5 @@
 from Tkinter import *
+from tkinter import messagebox
 import socket, ssl
 import select
 import sys
@@ -134,7 +135,8 @@ class ChatPage(Frame):
         while True:
             try:
                 msg = server.recv(BUFSIZ).decode("utf-8")
-                #print(msg)
+
+                print("The message is : ", msg)
                 if msg[0] == '1':
                     self.msg_list.insert(END, msg[1:])
 
@@ -142,9 +144,13 @@ class ChatPage(Frame):
                     self.user_list.delete(0, END)
                     for names in msg[1:].split(','):
                         self.user_list.insert(END, names)
-                
+                elif msg == "bla":
+                    messagebox.showerror("Invalid Credentials", "Incorrect Username or Password!!!!!!!!")
                 else:
                     self.msg_list.insert(END, msg)
+
+                msg = "bla"
+                print("before receive", msg)
                 
             except OSError:  # Possibly client has left the chat.
                 break
