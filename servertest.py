@@ -14,7 +14,7 @@ from tkinter import messagebox
 
 global selected_users
 users = [('admin', 'pass'), ('user', 'pass1'), ('shree', 'shree'), ('jon', 'jon')]
-online_users = [
+online_users = []
 selected_users = []
 
 
